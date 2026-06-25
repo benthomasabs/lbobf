@@ -1564,7 +1564,7 @@ const KAIZEN_HTML = `<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-
     body += '2. SUGGESTED IMPROVEMENT\n' + suggestion + '\n\n';
     body += '3. EXPECTED BENEFIT\n' + benefit;
 
-    window.open('mailto:kaizen@absatellite.com?subject=' + subject + '&body=' + encodeURIComponent(body), '_blank');
+    window.location.href = 'mailto:kaizen@absatellite.com?subject=' + subject + '&body=' + encodeURIComponent(body);
     document.getElementById('form-area').style.display = 'none';
     document.getElementById('success-area').style.display = 'block';
   }
