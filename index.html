@@ -644,14 +644,45 @@ p.body + p.body{margin-top:13px}
   box-shadow:0 4px 14px rgba(0,0,0,.3);
 }
 .kaizen-close:hover{ background:#0070C0; }
+/* Questions pill */
+.questions-pill{
+  display:inline-flex; align-items:center; gap:10px; cursor:pointer;
+  margin:2px 0 0 16px; padding:13px 26px; border-radius:999px;
+  background:#ffffff; color:#4472c4;
+  border:2px solid #4472c4; font-family:var(--font); font-weight:800;
+  font-size:15px; letter-spacing:.005em; line-height:1;
+  box-shadow:0 10px 28px rgba(0,0,0,.4),0 0 0 6px rgba(68,114,196,.12);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.questions-pill svg{ width:18px; height:18px; stroke:#4472c4; fill:none; stroke-width:2.4; stroke-linecap:round; }
+.questions-pill:hover{ transform:translateY(-2px); box-shadow:0 16px 38px rgba(0,0,0,.48),0 0 0 8px rgba(68,114,196,.18); }
+.questions-pill:active{ transform:translateY(0); }
+.questions-overlay{
+  position:fixed; inset:0; z-index:10000; display:none;
+  background:rgba(4,9,18,.78); backdrop-filter:blur(4px);
+  align-items:center; justify-content:center; padding:24px;
+}
+.questions-overlay.open{ display:flex; }
+.questions-modal{
+  position:relative; width:min(720px,100%); max-height:90vh; overflow:hidden;
+  background:#fff; border-radius:16px; box-shadow:0 30px 80px rgba(0,0,0,.6);
+}
+.questions-modal iframe{ width:100%; height:88vh; max-height:780px; border:0; display:block; background:#0A1628; }
+.questions-close{
+  position:absolute; top:12px; right:12px; z-index:2; width:36px; height:36px;
+  border-radius:50%; border:none; cursor:pointer; background:#002060; color:#fff;
+  font-size:20px; line-height:1; display:grid; place-items:center;
+  box-shadow:0 4px 14px rgba(0,0,0,.3);
+}
+.questions-close:hover{ background:#0070C0; }
 </style>
 </head>
 <body>
 <div id="app">
-  <div class="kaizen-overlay" id="kaizenOverlay">
-    <div class="kaizen-modal">
-      <button class="kaizen-close" onclick="closeKaizen()" aria-label="Close form">&times;</button>
-      <iframe id="kaizenFrame" title="Kaizen idea submission"></iframe>
+  <div class="questions-overlay" id="questionsOverlay">
+    <div class="questions-modal">
+      <button class="questions-close" onclick="closeQuestions()" aria-label="Close form">&times;</button>
+      <iframe id="questionsFrame" title="Questions about this digital booklet"></iframe>
     </div>
   </div>
   <!-- TOP BAR -->
@@ -1053,10 +1084,6 @@ P({sec:4, crumb:'How can I help?', html:`
 <div class="wrap">
   <div class="eyebrow reveal">Live the values</div>
   <h2 class="heading reveal" style="margin:14px 0 14px">Four values, turned into everyday action</h2>
-  <button class="kaizen-pill reveal d1" onclick="openKaizen()">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-    Submit your idea through Kaizen
-  </button>
   <div class="grid reveal d1" style="grid-template-columns:1fr 1fr;gap:16px;margin-top:18px">
     <div class="card"><h3 class="vcard-title" style="color:var(--blue-300)">Be Agile</h3><div class="vcard-sub">listen and deliver</div>
       <ul><li>Spot ways to simplify processes or speed up partner response</li><li>Embrace new tools fully, and share what works</li><li>Bring ideas for a better partner experience, even small ones</li></ul></div>
@@ -1081,7 +1108,21 @@ P({sec:4, crumb:'How can I help?', html:`
       <div class="goal"><div class="gn">80%</div><div class="gl">Engagement</div><div class="gd">The proportion of partners who rate us nine or ten out of ten. Not satisfied — delighted. That number tells us whether the strategy has worked.</div></div>
       <div class="goal"><div class="gn">2×</div><div class="gl">Market growth</div><div class="gd">By 2030 we aim to outstrip the average growth of the satellite wholesale market by at least double. We could have built dozens of KPIs. These two tell us everything. You’ll hear progress at every all-hands.</div></div>
     </div>
-    <p class="pull reveal d3" style="margin-top:30px">Twenty years of trust built this business. <span class="hl">The next twenty begin here.</span></p>
+  </div>
+</div>`});
+
+P({sec:4, crumb:'How can I help?', html:`
+<div class="finale">
+  ${stars(90)}
+  <div class="finveil"></div>
+  <div class="wrap eqw eqw-wide" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;text-align:center">
+    <h1 class="title reveal" style="margin:0 0 40px">Twenty years of trust built this business. <span class="hl">The next twenty begin here.</span></h1>
+    <div class="reveal d2" style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:center">
+      <button class="questions-pill" onclick="openQuestions()">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Share your questions about this digital booklet here
+      </button>
+    </div>
   </div>
 </div>`});
 
@@ -1564,7 +1605,7 @@ const KAIZEN_HTML = `<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-
     body += '2. SUGGESTED IMPROVEMENT\n' + suggestion + '\n\n';
     body += '3. EXPECTED BENEFIT\n' + benefit;
 
-    window.location.href = 'mailto:kaizen@absatellite.com?subject=' + subject + '&body=' + encodeURIComponent(body);
+    window.open('mailto:kaizen@absatellite.com?subject=' + subject + '&body=' + encodeURIComponent(body), '_blank');
     document.getElementById('form-area').style.display = 'none';
     document.getElementById('success-area').style.display = 'block';
   }
@@ -1576,8 +1617,62 @@ const KAIZEN_HTML = `<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-
     document.getElementById('form-area').style.display = 'block';
     document.getElementById('success-area').style.display = 'none';
   }
-</scrip${''}t>
+<\/script>
 </body></html>`;
+const QUESTIONS_HTML=`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Share your suggestions — The Little Book of our Big Future</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100%;
+  }
+  .ms-form-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .ms-form-wrapper iframe {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+</style>
+</head>
+<body>
+<div class="ms-form-wrapper">
+  <iframe width="640px" height="480px" src="https://forms.office.com/Pages/ResponsePage.aspx?id=FmU81hXrD0e_IduLmvGSaMHDmuk3YjFBpEng_G1JQ_BUOVFaOThGRktJVDk0R1Y0UkhFRjAzWUhGRi4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen> </iframe>
+</div>
+</body>
+</html>
+`;
+function openQuestions(){
+  const ov=document.getElementById('questionsOverlay');
+  const fr=document.getElementById('questionsFrame');
+  if(fr && !fr.getAttribute('data-loaded')){ fr.srcdoc=QUESTIONS_HTML; fr.setAttribute('data-loaded','1'); }
+  if(ov) ov.classList.add('open');
+}
+function closeQuestions(){
+  const ov=document.getElementById('questionsOverlay');
+  if(ov) ov.classList.remove('open');
+}
+(function(){
+  const ov=document.getElementById('questionsOverlay');
+  if(ov) ov.addEventListener('click',function(e){ if(e.target===ov) closeQuestions(); });
+  window.addEventListener('keydown',function(e){ if(e.key==='Escape') closeQuestions(); });
+})();
 function openKaizen(){
   const ov=document.getElementById('kaizenOverlay');
   const fr=document.getElementById('kaizenFrame');
